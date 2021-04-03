@@ -1,0 +1,1 @@
+web: gunicorn greenmap.wsgi --log-file -

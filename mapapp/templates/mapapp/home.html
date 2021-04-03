@@ -1,0 +1,426 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+	 crossorigin="anonymous">
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+	 crossorigin="anonymous">
+
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Slabo+27px&display=swap" rel="stylesheet">
+	<style>
+		body {
+			margin-bottom: 20px;
+			padding-bottom: 20px;
+			font-family: 'Slabo 27px', serif;
+		}
+
+		#map {
+			/* top: 0;
+            bottom: 0; */
+			width: 100%;
+			height: 600px;
+		}
+    #instructions {
+      position: absolute;
+      margin: 20px;
+      width: 25%;
+      top: 10%;
+      bottom: 40%;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      overflow-y: scroll;
+      font-family: sans-serif;
+      font-size: 0.8em;
+      line-height: 2em;
+    }
+
+    .duration {
+      font-size: 2em;
+    }
+	</style>
+	<title> Road Map </title>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active" align="center">
+					<a href="#"><img src="{% static '/images/nvlogo.png' %}" style="height:40px"></a>
+      </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/mapapp/c_offset/">Remove Carbon Offset<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="/mapapp/aboutus/">About us<span class="sr-only">(current)</span></a>
+              </li>
+        
+          
+      </nav>
+    <div id='map'></div>
+    <div id="instructions"></div>
+
+<div align="center" style="margin-top: 20px">
+      <div class="col-md-6"style="text-transform:capitalize; text-align:justify">
+          <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              
+              <div style="text-transform:capitalize; text-align:justify">
+    <div class="input-group mb-3" style="width:75%">
+        <div class="input-group-prepend" >
+          <label class="input-group-text" for="inputGroupSelect01">Options</label>
+        </div>
+        <select class="custom-select" id="inputGroupSelect01" style="text-transform:capitalize">
+          <option selected>Choose Your Mode of Travel</option>
+          <option value="1">cycling</option>
+          <option value="2">walking</option>
+          <option value="3">driving</option>
+        </select>
+      </div>
+
+      
+          <h4>total distance: <span id="distance_value">  0 meters</span></h4>
+          <h4>total time required: <span id="time_required">0  seconds</span></h4>
+          <h4> source aqi value: <span id="source_aqi_value"></span></h4>
+          <h4>Source air quality type: <span id="source_aqi_type"></span></h4>
+          <h4> destination aqi value: <span id="dest_aqi_value"></span></h4>
+          <h4>destination air quality type: <span id="dest_aqi_type"></span></h4>
+        <hr style="height:2px;border-width:0;color:gray;background-color:gray">    
+          </div>
+            </div>
+
+
+            <div class="col-auto d-none d-lg-block">
+              <img src="{% static 'images/map.svg' %}" class="bd-placeholder-img pr-3" width="200" height="250">
+            </div>
+
+
+
+<div style="text-align: justify; text-tranform: capitalize; margin-left:20px; padding:0; margin-top:0px">
+            <form action="save_user_data/" method="POST">{% csrf_token %}
+                <h4>total carbon footprint: <input type="text" id="carbon_footprint" name="carbon_footprint" placeholder="0" style="width:40%"> kg of C02</h4>
+                <h4>cost to offset the footprint: <span id="offset_cost"> 0 </span> INR</h4>
+                <input style="margin-left:200px; width:200px; margin-bottom:20px" type="submit" value="save" class="btn-primary" >
+            </form>
+            </div>
+          </div>
+        </div>
+
+
+</div>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+</body>
+
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoicHJheWFzcGFsIiwiYSI6ImNrbTJ5MTF0NTAzNW8yeGxjcDRja3B0dG8ifQ.NQRGpeu6L4I1fLu6-BHgxA';
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [88.36972045898438, 22.569719314575195], // starting position
+        zoom: 13
+    });
+    var canvas = map.getCanvasContainer();
+    var dest_color='#b8b340';
+    var start = [88.36972045898438, 22.569719314575195];
+    async function aqi_fun(start, end)
+    {
+        const r1=await fetch('https://api.weatherbit.io/v2.0/current/airquality?lat='+start[1]+'&lon='+start[0]+'&key=c64a2e43708941bd9ac4450b13d6c235');
+        const json_obj1 = await r1.json();
+        console.log(json_obj1)
+        document.getElementById('source_aqi_value').innerHTML=json_obj1['data'][0]['aqi'];
+        document.getElementById('source_aqi_type').innerHTML='unhealthy and sensitive';
+        document.getElementById('source_aqi_type').style.color='#b8b340';
+        const r2=await fetch('https://api.weatherbit.io/v2.0/current/airquality?lat='+end[1]+'&lon='+end[0]+'&key=c64a2e43708941bd9ac4450b13d6c235');
+        const json_obj2 = await r2.json();
+        console.log(json_obj2)
+        document.getElementById('dest_aqi_value').innerHTML=json_obj2['data'][0]['aqi'];
+        document.getElementById('dest_aqi_type').innerHTML='<style>unhealthy and sensitive';
+        if(parseInt(json_obj2['data'][0]['aqi'])<51)
+        {
+            //console.log('green')
+            dest_color='#2d6102';
+            document.getElementById('dest_aqi_type').innerHTML='healthy environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+        else if(parseInt(json_obj2['data'][0]['aqi'])<101)
+        {
+            //console.log('light green')
+            dest_color='#7aa358';
+            document.getElementById('dest_aqi_type').innerHTML='moderately healthy environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+        else if(parseInt(json_obj2['data'][0]['aqi'])<201)
+        {
+            //console.log('yellow');
+            dest_color='#b8b340';
+            document.getElementById('dest_aqi_type').innerHTML='unhealthy environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+        else if(parseInt(json_obj2['data'][0]['aqi'])<301)
+        {
+            dest_color='#f09c0c';
+            document.getElementById('dest_aqi_type').innerHTML='unhealthy and sensitive environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+        else if(parseInt(json_obj2['data'][0]['aqi'])<401)
+        {
+            dest_color='#ab6f59';
+            document.getElementById('dest_aqi_type').innerHTML='Very unhealhy environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+        else
+        {
+            dest_color='#8b0000';
+            document.getElementById('dest_aqi_type').innerHTML='Hazardous environment';
+            document.getElementById('dest_aqi_type').style.color=dest_color;
+        }
+    }
+    // create a function to make a directions request
+    function getRoute(end) {
+        // make a directions request using cycling profile
+        // an arbitrary start will always be the same
+        // only the end or destination will change
+        var start = [88.36972045898438, 22.569719314575195];//[lng,lat]
+        var transport_mode_array=['cycling','walking','driving'];
+        if(transport_mode_array[parseInt(document.getElementById('inputGroupSelect01').value)-1]==undefined)
+        {
+            var transport_mode='walking';
+        }
+        else
+        {
+            var transport_mode=transport_mode_array[parseInt(document.getElementById('inputGroupSelect01').value)-1];
+        }
+        console.log(transport_mode);
+        
+        var url = 'https://api.mapbox.com/directions/v5/mapbox/'+transport_mode+'/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
+
+        // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+        var req = new XMLHttpRequest();
+        req.open('GET', url, true);
+        req.onload = function () {
+            var json = JSON.parse(req.response);
+            
+            var data = json.routes[0];
+            console.log(data);
+            document.getElementById('distance_value').innerHTML=data['distance'] +'  '+'   meters';
+            document.getElementById('time_required').innerHTML=data['duration']+' seconds';
+            if(transport_mode=='driving')
+            {
+                document.getElementById('carbon_footprint').value= parseFloat(data['distance']*0.0004);
+                console.log(parseFloat(data['distance']*0.0004))
+                document.getElementById('offset_cost').innerHTML= parseFloat(data['distance']*0.0004*0.9);
+            }
+            
+            // get the sidebar and add the instructions
+            var instructions = document.getElementById('instructions');
+            var steps = data.legs[0].steps;
+
+            var tripInstructions = [];
+            for (var i = 0; i < steps.length; i++) {
+              tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
+              instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min 🚴 </span>' + tripInstructions;
+            }
+
+            //aqi data
+            aqi_fun(start,end); 
+            //document.getElementById('distance_value').innerHTML=data['distance']+'meters'
+            var route = data.geometry.coordinates;
+            var geojson = {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: route
+                }
+            };
+            // if the route already exists on the map, reset it using setData
+            if (map.getSource('route')) {
+                map.getSource('route').setData(geojson);
+            } else { // otherwise, make a new request
+                
+                map.addLayer({
+                    id: 'route',
+                    type: 'line',
+                    source: {
+                        type: 'geojson',
+                        data: {
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'LineString',
+                                coordinates: geojson
+                            }
+                        }
+                    },
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': "#b8b440",
+                        'line-width': 5,
+                        'line-opacity': 0.75
+                    }
+                });
+            }
+            // add turn instructions here at the end
+        };
+        req.send();
+    }
+
+    map.on('load', function () {
+        // make an initial directions request that
+        // starts and ends at the same location
+        getRoute(start);
+        var start_color='#b8b440'
+        // Add starting point to the map
+        map.addLayer({
+            id: 'point',
+            type: 'circle',
+            source: {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: [{
+                        type: 'Feature',
+                        properties: {},
+                        geometry: {
+                            type: 'Point',
+                            coordinates: start
+                        }
+                    }
+                    ]
+                }
+            },
+            paint: {
+                'circle-radius': 15,
+                'circle-color': start_color,
+                'circle-opacity': 0.6
+            }
+        });
+        // this is where the code from the next step will go
+    });
+    map.on('click', function (e) {
+        var coordsObj = e.lngLat;
+        canvas.style.cursor = '';
+        var coords = Object.keys(coordsObj).map(function (key) {
+            return coordsObj[key];
+        });
+        console.log(coords,dest_color);
+        var end = {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'Point',
+                    coordinates: coords
+                }
+            }
+            ],
+            paint: {
+                    'circle-radius': 15,
+                    'circle-opacity': 0.6,
+                    'circle-color': dest_color,
+                    
+                }
+        };
+        if (map.getLayer('end')) {
+            console.log('dest_color');
+            console.log(end);
+            //map.getSource('end').setData(end);
+            map.removeLayer('end')
+            map.removeSource('end');
+            map.addLayer({
+                id: 'end',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: coords
+                            }
+                        }]
+                    }
+                },
+                paint: {
+                    'circle-radius': 15,
+                    'circle-opacity': 0.6,
+                    'circle-color': dest_color,
+                }
+            });
+            
+        } else {
+            console.log(dest_color)
+            map.addLayer({
+                id: 'end',
+                type: 'circle',
+                source: {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: [{
+                            type: 'Feature',
+                            properties: {},
+                            geometry: {
+                                type: 'Point',
+                                coordinates: coords
+                            }
+                        }]
+                    }
+                },
+                paint: {
+                    'circle-radius': 15,
+                    'circle-opacity': 0.6,
+                    'circle-color': dest_color,
+                }
+            });
+        }
+        getRoute(coords);
+    });
+
+    // get the sidebar and add the instructions
+// var instructions = document.getElementById('instructions');
+// var steps = data.legs[0].steps;
+
+// var tripInstructions = [];
+// for (var i = 0; i < steps.length; i++) {
+//   tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
+//   instructions.innerHTML = '<br><span class="duration">Trip duration: ' + Math.floor(data.duration / 60) + ' min 🚴 </span>' + tripInstructions;
+// }
+</script>
+
+</html>
