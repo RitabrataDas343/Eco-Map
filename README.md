@@ -22,7 +22,7 @@ One click for a green and carbon neutral future
 ### 2. Clone this Repo :
 ```sh
 git clone https://github.com/d-rorschach/Eco-Map.git
-cd Eco-Map
+cd Eco-Map-main
 ```
 You can also download the folder and extract all the files in your local system.<br>
 Open your IDE install the requirements.
