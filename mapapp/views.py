@@ -25,7 +25,7 @@ def c_offset(rq):
     a=accountholder.objects.get(user=rq.user)
     param={
         'carbon_footprint':a.carbon_footprint,
-        'carbon_offset_cost':(a.carbon_footprint*0.9)
+        'carbon_offset_cost':(a.carbon_footprint*0.9*0.0000065)
     }
     return render(rq,'mapapp/c_offset.html',param)
 
@@ -45,9 +45,9 @@ def remove_carbon_footprint(rq):
 
   a=accountholder.objects.get(user=rq.user)
   print('*******************')
-  print(a.carbon_footprint)
+  #print((0.9*0.0000065)*a.carbon_footprint)
   param={
         'carbon_footprint':a.carbon_footprint,
-        'carbon_offset_cost':(a.carbon_footprint*0.9)
+        'carbon_offset_cost':(a.carbon_footprint*0.9*0.0000065)
     }
   return HttpResponseRedirect('/mapapp/c_offset/')

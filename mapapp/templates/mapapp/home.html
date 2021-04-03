@@ -125,6 +125,7 @@
 <div style="text-align: justify; text-tranform: capitalize; margin-left:20px; padding:0; margin-top:0px">
             <form action="save_user_data/" method="POST">{% csrf_token %}
                 <h4>total carbon footprint: <input type="text" id="carbon_footprint" name="carbon_footprint" placeholder="0" style="width:40%"> kg of C02</h4>
+                <h4>cost to offset the footprint: <span id="offset_cost_inr"> 0 </span> INR</h4>
                 <h4>cost to offset the footprint: <span id="offset_cost"> 0 </span> Ether</h4>
                 <input style="margin-left:200px; width:200px; margin-bottom:20px" type="submit" value="save" class="btn-primary" >
             </form>
@@ -250,6 +251,7 @@
                 document.getElementById('carbon_footprint').value= parseFloat(data['distance']*0.0004);
                 console.log(parseFloat(data['distance']*0.0004))
                 document.getElementById('offset_cost').innerHTML= parseFloat(data['distance']*0.0004*0.9*0.0000065);
+                document.getElementById('offset_cost_inr').innerHTML= parseFloat(data['distance']*0.0004*0.9);
             }
             
             // get the sidebar and add the instructions
