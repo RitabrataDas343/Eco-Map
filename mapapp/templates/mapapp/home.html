@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
 	 crossorigin="anonymous">
 
-
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Slabo+27px&display=swap" rel="stylesheet">
 	<style>
@@ -76,6 +76,7 @@
     <div id='map'></div>
     <div id="instructions"></div>
 
+    
 <div align="center" style="margin-top: 20px">
       <div class="col-md-6"style="text-transform:capitalize; text-align:justify">
           <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -92,8 +93,17 @@
           <option value="2">walking</option>
           <option value="3">driving</option>
         </select>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            We advice you to use cycling or walking as it keeps you and your environment healthy.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
       </div>
+        
+      <div>
 
+      </div>
       
           <h4>total distance: <span id="distance_value">  0 meters</span></h4>
           <h4>total time required: <span id="time_required">0  seconds</span></h4>
@@ -115,7 +125,7 @@
 <div style="text-align: justify; text-tranform: capitalize; margin-left:20px; padding:0; margin-top:0px">
             <form action="save_user_data/" method="POST">{% csrf_token %}
                 <h4>total carbon footprint: <input type="text" id="carbon_footprint" name="carbon_footprint" placeholder="0" style="width:40%"> kg of C02</h4>
-                <h4>cost to offset the footprint: <span id="offset_cost"> 0 </span> INR</h4>
+                <h4>cost to offset the footprint: <span id="offset_cost"> 0 </span> Ether</h4>
                 <input style="margin-left:200px; width:200px; margin-bottom:20px" type="submit" value="save" class="btn-primary" >
             </form>
             </div>
@@ -135,6 +145,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 
 <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
@@ -236,7 +249,7 @@
             {
                 document.getElementById('carbon_footprint').value= parseFloat(data['distance']*0.0004);
                 console.log(parseFloat(data['distance']*0.0004))
-                document.getElementById('offset_cost').innerHTML= parseFloat(data['distance']*0.0004*0.9);
+                document.getElementById('offset_cost').innerHTML= parseFloat(data['distance']*0.0004*0.9*0.0000065);
             }
             
             // get the sidebar and add the instructions
@@ -321,7 +334,7 @@
                 }
             },
             paint: {
-                'circle-radius': 15,
+                'circle-radius': 12,
                 'circle-color': start_color,
                 'circle-opacity': 0.9
             }
@@ -347,7 +360,7 @@
             }
             ],
             paint: {
-                    'circle-radius': 15,
+                    'circle-radius': 12,
                     'circle-opacity': 0.9,
                     'circle-color': dest_color,
                     
@@ -377,7 +390,7 @@
                     }
                 },
                 paint: {
-                    'circle-radius': 15,
+                    'circle-radius': 12,
                     'circle-opacity': 0.9,
                     'circle-color': dest_color,
                 }
@@ -403,7 +416,7 @@
                     }
                 },
                 paint: {
-                    'circle-radius': 15,
+                    'circle-radius': 12,
                     'circle-opacity': 0.9,
                     'circle-color': dest_color,
                 }
