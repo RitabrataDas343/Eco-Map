@@ -3,14 +3,14 @@ One click for a green and carbon neutral future
 
 ## Features :sparkles:
 - :red_car: Calculate your Carbon Footprint while travelling from one place to another.
-- :deciduous_tree: Remove Carbon Offset by donating for Tree Plantation using Portis API.
+- :deciduous_tree: Remove Carbon Offset by donating for Tree Plantation using Portis crypto currency wallet.
 - :four_leaf_clover: Go Carbon Neutral and contribute for a sustainable future.
 - :bike: Choose the right mode of Travel and Get a detailed rout.
 
 ## Technologies Used :hammer_and_wrench:
  - :construction: Back-End: Django, Sqlite3 Database
  - :computer: Front-End: Bootstrap, Html5, Css3, JavaScript, jquery
- - :gear: Mapbox Api, Airquality Api, Portis API
+ - :gear: Mapbox API, Airquality API, Portis API
 
 <hr> 
 
